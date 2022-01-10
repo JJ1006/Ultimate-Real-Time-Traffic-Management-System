@@ -3,10 +3,12 @@
 import cv2
 
 # capture frames from a video
-cap = cv2.VideoCapture('videos/car.mp4')
+# add you path to the video
+cap = cv2.VideoCapture('C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/4kcamera.mp4')
 
+# add your path to the xml file
 # Trained XML classifiers describes some features of some object we want to detect
-car_cascade = cv2.CascadeClassifier('cars.xml')
+car_cascade = cv2.CascadeClassifier('C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/cars.xml')
 
 # loop runs if capturing has been initialized.
 while True:
@@ -23,13 +25,12 @@ while True:
 	# To draw a rectangle in each cars
 	for (x,y,w,h) in cars:
 		cv2.rectangle(frames,(x,y),(x+w,y+h),(0,0,255),2)
-
-# Display frames in a window
-cv2.imshow('video2', frames)
+        # Display frames in a window
+		cv2.imshow('video2', frames)
 	
-	# Wait for Esc key to stop
-	if cv2.waitKey(33) == 27:
-		break
+    # Wait for Esc key to stop
+	if cv2.waitKey(33) == 27 :
+	   break
 
 # De-allocate any associated memory usage
 cv2.destroyAllWindows()
