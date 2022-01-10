@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 # 1. extract video frames
 # Opens the inbuilt camera of laptop to capture video.
-cap = cv2.VideoCapture('C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/cars.mp4')
+cap = cv2.VideoCapture('C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/4Kcamera1_Trim.mp4')
 i = 0
 
 while(cap.isOpened()):
@@ -76,8 +76,8 @@ for i in range(len(col_images)-1):
     valid_cntrs = []
     for cntr in contours:
         x,y,w,h = cv2.boundingRect(cntr)
-        if (x <= 200) & (y >= 10) & (cv2.contourArea(cntr) >= 25):
-            if (y >= 20) & (cv2.contourArea(cntr) < 40):
+        if (x <= 3840) & (y >= 250) & (cv2.contourArea(cntr) >= 150):
+            if (y >= 250) & (cv2.contourArea(cntr) < 150):
                 break
             valid_cntrs.append(cntr)
             
@@ -85,13 +85,13 @@ for i in range(len(col_images)-1):
     dmy = col_images[i].copy()
     cv2.drawContours(dmy, valid_cntrs, -1, (127,200,0), 2)
     
-    cv2.putText(dmy, "vehicles detected: " + str(len(valid_cntrs)), (10, 15), font, 0.3, (255, 255, 255), 1)
-    cv2.line(dmy, (0, 10),(256,10),(100, 255, 255))
+    cv2.putText(dmy, "vehicles detected: " + str(len(valid_cntrs)), (30, 100), font, 1, (255, 255, 255), 2)
+    cv2.line(dmy, (0, 250),(3840,250),(100, 255, 255))
     cv2.imwrite(pathIn+str(i)+'.png',dmy)  
 
 # 4 . video preparation
 # specify video name
-pathOut = 'vehicle_detection_v3.mp4'
+pathOut = 'vehicle_detection_v2.mp4'
 
 # specify frames per second
 fps = 14.0
