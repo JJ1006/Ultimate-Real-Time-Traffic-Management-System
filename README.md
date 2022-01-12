@@ -6,6 +6,6 @@ Research on Traffic Management System on real time basis.
 <h3> https://rsdharra.com/blog/lesson/26.html from where cars.mp4 and cars.xml copied </h3>
 
 <h1> To do </h1>
-<p> 1. learn tkinter and stream a video from outputframes on the tkinter window. </p>
-<p> 2. till now have created the program to extract frames from video , add count of vehicles in the detection zone in each frame and combine this collection of frames back to a video. </p>
-<p> so now we have to make a program that counts the cars in the frames of live recording video and gives the continuous output of car count in the detection zone on the tkinter GUI window. </p>
+<p> 1. Image processing in opencv and count the vehicles </p>
+<p> 2. Understand all the four lanes and built a program that can easily let all the vehicles on more crowded side to release first</p>
+
