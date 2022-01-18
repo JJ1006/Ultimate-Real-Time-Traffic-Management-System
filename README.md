@@ -21,19 +21,19 @@ Research on Traffic Management System on real time basis.
 <p><span>2. Algorithm for RGY :
   add one switch loop here for different breadths of road to have different threshold values for each kind of roads.
   <h2>i)check all cases</h2>
-  <span>a)if(no. of vehicles > 15(threshold):
+  <p>a)if(no. of vehicles > 15(threshold):
        for 30 sec:
-          green light = on
-  b)check again 
+          green light = on </p>
+  <p>b)check again 
     if same lane in a) then repeat+1 a) untill repeat <2  <h1> [issue here is if the signal is green then vehciles must be moving in that region than image of what time will be considered as all the vehicles must be moving in that lane .. so how to consider or count the vehicles in that lane]</h1>
-    if repeat >3 break and consider other three sides for a)
-  c)give priority to the first lane having more than threshold count of vehicles and allot the green light to lanes in this priority
+    if repeat >3 break and consider other three sides for a) </p>
+  <p>c)give priority to the first lane having more than threshold count of vehicles and allot the green light to lanes in this priority.</p>
   </span>
     
   <h2>ii)if any side has been opened uptill</h2>
-   <span>a)if any side not opened for 100 seconds then open it for( max(no. of vehicles,30sec) seconds) means maximum of the two in the brackets would be chosen , this would save the time if no. of vehciles is less than 30. [assuming one vehicle takes 1 sec to cross the crossing].
-   </span>
-  <h2>iii)if number of vehicles <15 (threshold) on everyside than clockwise green on each side for 30sec green .
+   <p><span>a)if any side not opened for 100 seconds then open it for( max(no. of vehicles,30sec) seconds) means maximum of the two in the brackets would be chosen , this would save the time if no. of vehciles is less than 30. [assuming one vehicle takes 1 sec to cross the crossing].
+   </span></p>
+  <h2>iii)if number of vehicles <15 (threshold) on everyside than clockwise green on each side for 30sec green .</h2>
 </span>
 </p>
 
