@@ -184,6 +184,7 @@ def from_static_image(image):
         cwriter = csv.writer(f1)
         cwriter.writerow([image, frequency['car'], frequency['motorbike'], frequency['bus'], frequency['truck']])
     f1.close()
+    return frequency
 
 cv2.destroyAllWindows()
 
