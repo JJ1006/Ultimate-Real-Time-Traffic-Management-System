@@ -31,7 +31,7 @@ Research on Traffic Management System on real time basis.
   </span>
     
   <h2>ii)if any side has been opened uptill</h2>
-   <p><span>a)if any side not opened for 100 seconds then open it for( max(no. of vehicles,30sec) seconds) means maximum of the two in the brackets would be chosen , this would save the time if no. of vehciles is less than 30. [assuming one vehicle takes 1 sec to cross the crossing].
+   <p><span>a)if any side not opened for 100 seconds then open it for( min(no. of vehicles,30sec) seconds) means minimum of the two in the brackets would be chosen , this would save the time if no. of vehciles is less than 30. [assuming one vehicle takes 1 sec to cross the crossing].
    </span></p>
   <h2>iii)if number of vehicles <15 (threshold) on everyside than clockwise green on each side for 30sec green .</h2>
 </span>
