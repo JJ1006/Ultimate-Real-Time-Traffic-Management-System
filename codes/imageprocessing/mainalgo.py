@@ -1,5 +1,4 @@
 import threading
-from django.shortcuts import redirect
 import vehicle_count
 import time
 
