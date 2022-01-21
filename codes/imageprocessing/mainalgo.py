@@ -23,7 +23,7 @@ def yellow(G, R):
     Y = G #green lane becomes yellow for 10 sec
     threading.Thread.sleep(10000) 
     R.append(Y) #now after 10 sec yellow is turned to red 
-
+   
 def green(G, s):
     G = G
     threading.Thread.sleep(s)
@@ -32,8 +32,9 @@ def Red(R, s):
     R = R
     threading.Thread.sleep(s)
 
-def find_next_green_Lane(): #make sure this thread takes less than 10 sec so that we are ready with next green lane number before the yellow turns into red
-    sum = greatestLaneCount()
+def find_next_green_Lane(sum1): #make sure this thread takes less than 10 sec so that we are ready with next green lane number before the yellow turns into red
+    sum1 = greatestLaneCount()
+    
     
 
 def setting(G,R,s):
@@ -44,12 +45,12 @@ def setting(G,R,s):
     t2.start()
     t_end_yellow = time.time() + 10
     t4 = threading.Thread(target=yellow, args = (G,R))  #starting yellow for 10sec
-    sum = []   #to get the list from find_next_green_Lane thread
-    t5 = threading.Thread(target=find_next_green_Lane, args = (sum,)) 
+    sum1 = []   #to get the list from find_next_green_Lane thread
+    t5 = threading.Thread(target=find_next_green_Lane, args = (sum1,)) 
     t1.join() #to make sure that t1 i.e green thread has completed
     t4.start()
-    t5.start() 
-    return sum
+    t5.start()  
+    return sum1
 
 
 #assuming side 1 has red ,side 2 has green, side 3 has red, side 4 has red as an initial case
@@ -64,7 +65,7 @@ def which_lane_to_choose(sum):
         sum = setting(G,R,seconds)
         which_lane_to_choose(sum)
 
-    if(max(sum) < 15): #clockwise
+    if(max(sum) <= 15): #clockwise
         G = G+1
         AllLane2 = AllLane[:]
         R = AllLane2.remove(G)
@@ -92,3 +93,4 @@ if __name__ == '__main__':
     G = 1
     R = [2,3,4]
     Y = 0
+    which_lane_to_choose(sum)
