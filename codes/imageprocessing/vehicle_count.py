@@ -106,6 +106,7 @@ def count_vehicle(box_id, img):
 # Function for finding the detected objects from the network output
 def postProcess(outputs,img):
     global detected_classNames 
+    detected_classNames = []
     height, width = img.shape[:2]
     boxes = []
     classIds = []
@@ -167,6 +168,7 @@ def from_static_image(image):
 
     # count the frequency of detected classes
     frequency = collections.Counter(detected_classNames)
+    f = dict(frequency)
     print(frequency)
     # Draw counting texts in the frame
     cv2.putText(img, "Car:        "+str(frequency['car']), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
@@ -176,15 +178,24 @@ def from_static_image(image):
 
 
     cv2.imshow("image", img)
-
     cv2.waitKey(0)
 
     # save the data to a csv file
-    with open("static-data.csv", 'a') as f1:
-        cwriter = csv.writer(f1)
-        cwriter.writerow([image, frequency['car'], frequency['motorbike'], frequency['bus'], frequency['truck']])
-    f1.close()
-    return frequency
+    # with open("static-data.csv", 'a') as f1:
+    #     cwriter = csv.writer(f1)
+    #     cwriter.writerow([image, frequency['car'], frequency['motorbike'], frequency['bus'], frequency['truck']])
+    # f1.close()
+    
+    f1 ={}
+    list1 = ['car','motorbike','bus', 'truck']
+    for a in list1:
+        if(a in f.keys()):
+            pass
+        else:
+            f1[str(a)] = 0
+           
+    f1.update(f) 
+    return f1
 
 cv2.destroyAllWindows()
 
