@@ -9,6 +9,8 @@ import numpy as np
 from tracker import *
 
 path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+# path = "D:Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+
 # Initialize Tracker
 tracker = EuclideanDistTracker()
 
@@ -159,7 +161,11 @@ def from_static_image(image):
     # Set the input of the network
     net.setInput(blob)
     layersNames = net.getLayerNames()
+    
+    # outputNames = ['yolo_82', 'yolo_94', 'yolo_106']
+    
     outputNames = [(layersNames[i[0] - 1]) for i in net.getUnconnectedOutLayers()]
+    
     # Feed data to the network
     outputs = net.forward(outputNames)
 
