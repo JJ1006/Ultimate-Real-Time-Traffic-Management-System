@@ -44,7 +44,11 @@ Research on Traffic Management System on real time basis.
 <p>2.44m breadth of cars</p>
 <p>0.68m side clearance</p>
 <p>So min breath of a Single lane is 3.8m</p>
-<p>Min breadth of 2Lane is 7m</p>
+<p>Min breadth of 2Lane with no kerbs is 7m</p>
+<p>Min breadth of 2Lane with karbs is 7.5m</p>
+<p>Min breadth of indetermidiate carriage is 5.5m</p>
+<p>Min breadth of multilane carriage is 3.5m per lane</p>
+
 
 
  
