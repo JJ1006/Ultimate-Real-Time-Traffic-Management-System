@@ -1,14 +1,14 @@
 # TechVidvan Vehicle counting and Classification
-
 # Import necessary packages
 
 import cv2
 import csv
 import collections
+from cv2 import WINDOW_NORMAL
 import numpy as np
 from tracker import *
 
-path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
 # path = "D:Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
 
 # Initialize Tracker
@@ -158,8 +158,7 @@ def postProcess(outputs,img):
         name = classNames[classIds[i]]
         detected_classNames.append(name)
         # Draw classname and confidence score 
-        cv2.putText(img,f'{name.upper()} {int(confidence_scores[i]*100)}%',
-                  (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+        cv2.putText(img,f'{name.upper()} {int(confidence_scores[i]*100)}%',(x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
         # Draw bounding rectangle
         cv2.rectangle(img, (x, y), (x + w, y + h), color, 1)
@@ -208,6 +207,11 @@ def from_static_image(image):
     cv2.putText(img, "Truck:      "+str(frequency['truck']), (20, 100), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
 
 
+    # cv2.imshow("image", img)
+    # cv2.waitKey(0)
+
+    cv2.namedWindow('image',WINDOW_NORMAL)
+    cv2.resizeWindow('image', 800,600) # to resize the output window
     cv2.imshow("image", img)
     cv2.waitKey(0)
 
@@ -236,4 +240,4 @@ cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     # realTime()
-    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
+    from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
