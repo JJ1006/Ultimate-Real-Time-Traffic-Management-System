@@ -28,7 +28,7 @@ Research on Traffic Management System on real time basis.
     if same lane in a) then repeat+1 a) untill repeat <2  <h1> [issue here is if the signal is green then vehciles must be moving in that region than image of what time will be considered as all the vehicles must be moving in that lane .. so how to consider or count the vehicles in that lane]</h1>
     if repeat >3 break and consider other three sides for a) </p>
   <p>c)give priority to the first lane having more than threshold count of vehicles and allot the green light to lanes in this priority.</p>
-  </span>
+  </span> 
     
   <h2>ii)if any side has been opened uptill</h2>
    <p><span>a)if any side not opened for 100 seconds then open it for( min(no. of vehicles,30sec) seconds) means minimum of the two in the brackets would be chosen , this would save the time if no. of vehciles is less than 30. [assuming one vehicle takes 1 sec to cross the crossing].
@@ -37,3 +37,18 @@ Research on Traffic Management System on real time basis.
 </span>
 </p>
 
+<h1> 28th JAN Meeting with MAM </h1>
+<span>1) Traffic Density by finding road area and vehicle area covered </span>
+  
+<h1> IMPS </h1>
+<p>2.44m breadth of cars</p>
+<p>0.68m side clearance</p>
+<p>So min breath of a Single lane is 3.8m</p>
+<p>Min breadth of 2Lane with no kerbs is 7m</p>
+<p>Min breadth of 2Lane with karbs is 7.5m</p>
+<p>Min breadth of indetermidiate carriage is 5.5m</p>
+<p>Min breadth of multilane carriage is 3.5m per lane</p>
+
+
+
+ 
