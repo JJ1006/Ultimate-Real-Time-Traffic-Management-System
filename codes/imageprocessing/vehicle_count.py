@@ -72,10 +72,14 @@ temp_down_list = []
 up_list = [0, 0, 0, 0]
 down_list = [0, 0, 0, 0]
 
+
+
+
 # Function for count vehicle
 def count_vehicle(box_id, img):
 
     x, y, w, h, id, index = box_id
+    
 
     # Find the center of the rectangle for detection
     center = find_center(x, y, w, h)
@@ -114,6 +118,8 @@ def postProcess(outputs,img):
     classIds = []
     confidence_scores = []
     detection = []
+    minx=100
+    maxx=0
     for output in outputs:
         for det in output:
             scores = det[5:]
@@ -133,6 +139,11 @@ def postProcess(outputs,img):
     # print(classIds)
     for i in indices.flatten():
         x, y, w, h = boxes[i][0], boxes[i][1], boxes[i][2], boxes[i][3]
+        print(x," ",y)
+        if(maxx < x):
+            maxx = x
+        if(minx > x):
+            minx = x
         # print(x,y,w,h)
 
         color = [int(c) for c in colors[classIds[i]]]
@@ -150,7 +161,7 @@ def postProcess(outputs,img):
     boxes_ids = tracker.update(detection)
     for box_id in boxes_ids:
         count_vehicle(box_id, img)
-
+    return minx,maxx
 
 image_file = 'vehicle classification-image02.png'
 def from_static_image(image):
@@ -162,15 +173,17 @@ def from_static_image(image):
     net.setInput(blob)
     layersNames = net.getLayerNames()
     
-    # outputNames = ['yolo_82', 'yolo_94', 'yolo_106']
+    outputNames = ['yolo_82', 'yolo_94', 'yolo_106']
     
-    outputNames = [(layersNames[i[0] - 1]) for i in net.getUnconnectedOutLayers()]
+    # outputNames = [(layersNames[i[0] - 1]) for i in net.getUnconnectedOutLayers()]
     
     # Feed data to the network
     outputs = net.forward(outputNames)
 
     # Find the objects from the network output
-    postProcess(outputs,img)
+    minx,maxx = postProcess(outputs,img)
+    print(minx, " ", maxx)
+    breadth = maxx-minx
 
     # count the frequency of detected classes
     frequency = collections.Counter(detected_classNames)
@@ -201,6 +214,7 @@ def from_static_image(image):
             f1[str(a)] = 0
            
     f1.update(f) 
+    f1['breadth'] = breadth
     return f1
 
 cv2.destroyAllWindows()
