@@ -120,6 +120,9 @@ def postProcess(outputs,img):
     detection = []
     minx=100
     maxx=0
+    maxy=0
+    miny = 100
+    vehicle_area = 0
     for output in outputs:
         for det in output:
             scores = det[5:]
@@ -139,11 +142,16 @@ def postProcess(outputs,img):
     # print(classIds)
     for i in indices.flatten():
         x, y, w, h = boxes[i][0], boxes[i][1], boxes[i][2], boxes[i][3]
+        vehicle_area = vehicle_area + (w*h)
         print(x," ",y)
         if(maxx < x):
             maxx = x
         if(minx > x):
             minx = x
+        if(maxy < y):
+            maxy =y
+        if(miny > y):
+            miny = y 
         # print(x,y,w,h)
 
         color = [int(c) for c in colors[classIds[i]]]
@@ -161,7 +169,7 @@ def postProcess(outputs,img):
     boxes_ids = tracker.update(detection)
     for box_id in boxes_ids:
         count_vehicle(box_id, img)
-    return minx,maxx
+    return minx,maxx,maxy,miny,vehicle_area
 
 image_file = 'vehicle classification-image02.png'
 def from_static_image(image):
@@ -181,9 +189,13 @@ def from_static_image(image):
     outputs = net.forward(outputNames)
 
     # Find the objects from the network output
-    minx,maxx = postProcess(outputs,img)
-    print(minx, " ", maxx)
+    minx,maxx,maxy,miny,vehicle_area = postProcess(outputs,img)
+    print(minx, " ", maxx," ",maxy," ", miny)
+    print(vehicle_area)
     breadth = maxx-minx
+    height = abs(miny-maxy)
+    road_area = breadth * height
+    ratio = float(road_area/vehicle_area)
 
     # count the frequency of detected classes
     frequency = collections.Counter(detected_classNames)
@@ -215,6 +227,9 @@ def from_static_image(image):
            
     f1.update(f) 
     f1['breadth'] = breadth
+    f1['vehicle_area'] = vehicle_area
+    f1['miny'] = miny
+    f1['maxy'] = maxy
     return f1
 
 cv2.destroyAllWindows()
