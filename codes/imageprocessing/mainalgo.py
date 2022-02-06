@@ -6,7 +6,8 @@ import queue
 que = queue.Queue()
 
 def greatestLaneCount():
-    freq1 = vehicle_count.from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
+    # freq1 = vehicle_count.from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
+    freq1 = vehicle_count.from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/testing.jpg")
     sum1 = freq1['car'] + freq1['motorbike'] + freq1['bus'] + freq1['truck']
     miny1 = freq1['miny']
     maxy1 = freq1['maxy']
@@ -17,7 +18,8 @@ def greatestLaneCount():
     height1 = maxy1 - miny1
     density1 = float (VA1/ (B1 * height1))
 
-    freq2 = vehicle_count.from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-1.jpg")
+    # freq2 = vehicle_count.from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-1.jpg")
+    freq2 = vehicle_count.from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/testing.jpg")
     sum2 = freq2['car'] + freq2['motorbike'] + freq2['bus'] + freq2['truck']
     miny2 = freq2['miny']
     maxy2 = freq2['maxy']
@@ -28,7 +30,8 @@ def greatestLaneCount():
     height2 = maxy2 - miny2
     density2 = float(VA2/ (B2 * height2))
 
-    freq3 = vehicle_count.from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-2.jpg")
+    # freq3 = vehicle_count.from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-2.jpg")
+    freq3 = vehicle_count.from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/testing.jpg")
     sum3 = freq3['car'] + freq3['motorbike'] + freq3['bus'] + freq3['truck']
     miny3 = freq3['miny']
     maxy3 = freq3['maxy']
@@ -39,7 +42,8 @@ def greatestLaneCount():
     height3 = maxy3 - miny3
     density3 = float(VA3/(B3 * height3))
 
-    freq4 = vehicle_count.from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-3.jpg")
+    # freq4 = vehicle_count.from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-3.jpg")
+    freq4 = vehicle_count.from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/testing.jpg")
     sum4 = freq4['car'] + freq4['motorbike'] + freq4['bus'] + freq4['truck']
     miny4 = freq4['miny']
     maxy4 = freq4['maxy']
