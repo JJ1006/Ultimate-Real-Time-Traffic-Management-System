@@ -143,7 +143,6 @@ def postProcess(outputs,img):
     for i in indices.flatten():
         x, y, w, h = boxes[i][0], boxes[i][1], boxes[i][2], boxes[i][3]
         vehicle_area = vehicle_area + (w*h)
-        print(x," ",y)
         if(maxx < x):
             maxx = x
         if(minx > x):
@@ -189,12 +188,10 @@ def from_static_image(image):
 
     # Find the objects from the network output
     minx,maxx,maxy,miny,vehicle_area = postProcess(outputs,img)
-    print(minx, " ", maxx," ",maxy," ", miny)
-    print(vehicle_area)
     breadth = maxx-minx
-    height = abs(miny-maxy)
+    height = maxy-miny
     road_area = breadth * height
-    ratio = float(road_area/vehicle_area)
+    ratio = (float)(road_area/vehicle_area)
 
     # count the frequency of detected classes
     frequency = collections.Counter(detected_classNames)
@@ -240,4 +237,4 @@ cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     # realTime()
-    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-1.jpg")
+    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
