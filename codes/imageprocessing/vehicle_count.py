@@ -8,7 +8,7 @@ from cv2 import WINDOW_NORMAL
 import numpy as np
 from tracker import *
 
-path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
 # path = "D:Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
 
 # Initialize Tracker
@@ -240,4 +240,4 @@ cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     # realTime()
-    from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
+    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-1.jpg")
