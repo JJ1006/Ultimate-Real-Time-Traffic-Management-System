@@ -7,7 +7,7 @@ Research on Traffic Management System on real time basis.
 <h3> https://www.cityofirvine.org/signal-operations-maintenance/traffic-signal-synchronization </h3>
 <h3> https://gadgetstouse.com/blog/2021/10/17/types-of-traffic-cameras-e-challan-in-india/ </h3>
 <h3> https://timesofindia.indiatimes.com/city/chandigarh/smart-cameras-to-manage-traffic-enforce-rules/articleshow/81130901.cms </h3>
-
+<H3> https://www.logipix.com/safe-and-smart-city-solution/ </h3>
 
 <h1> To do </h1>
 <p> 1. Image processing in opencv and count the vehicles </p>
