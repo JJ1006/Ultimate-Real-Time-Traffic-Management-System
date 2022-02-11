@@ -1,12 +1,16 @@
 # TechVidvan Vehicle counting and Classification
 # Import necessary packages
 
+from cmath import pi
 import cv2
 import csv
 import collections
 from cv2 import WINDOW_NORMAL
 import numpy as np
 from tracker import *
+from scipy.spatial import distance as dist
+from PIL import Image
+from math import sqrt
 
 path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
 # path = "D:Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
@@ -122,7 +126,9 @@ def postProcess(outputs,img):
     maxx=0
     maxy=0
     miny = 100
-    vehicle_area = 0
+    xminy=0
+    xmaxy=0
+   
     for output in outputs:
         for det in output:
             scores = det[5:]
@@ -142,11 +148,13 @@ def postProcess(outputs,img):
     # print(classIds)
     for i in indices.flatten():
         x, y, w, h = boxes[i][0], boxes[i][1], boxes[i][2], boxes[i][3]
-        vehicle_area = vehicle_area + (w*h)
+        print(x , " ", y)
         if(maxx < x):
             maxx = x
+            xmaxy = y
         if(minx > x):
             minx = x
+            xminy = y
         if(maxy < y):
             maxy =y
         if(miny > y):
@@ -167,10 +175,11 @@ def postProcess(outputs,img):
     boxes_ids = tracker.update(detection)
     for box_id in boxes_ids:
         count_vehicle(box_id, img)
-    return minx,maxx,maxy,miny,vehicle_area
+    return minx,maxx,maxy,miny,xmaxy,xminy
 
 image_file = 'vehicle classification-image02.png'
 def from_static_image(image):
+    vehicle_area = 0
     img = cv2.imread(image)
 
     blob = cv2.dnn.blobFromImage(img, 1 / 255, (input_size, input_size), [0, 0, 0], 1, crop=False)
@@ -187,11 +196,13 @@ def from_static_image(image):
     outputs = net.forward(outputNames)
 
     # Find the objects from the network output
-    minx,maxx,maxy,miny,vehicle_area = postProcess(outputs,img)
+    minx,maxx,maxy,miny, xmaxy, xminy = postProcess(outputs,img)
     breadth = maxx-minx
     height = maxy-miny
-    road_area = breadth * height
-    ratio = (float)(road_area/vehicle_area)
+    print(maxx, " ", minx)  
+    print(breadth)
+    # road_area = breadth * height
+    # ratio = (float)(road_area/vehicle_area)
 
     # count the frequency of detected classes
     frequency = collections.Counter(detected_classNames)
@@ -210,8 +221,40 @@ def from_static_image(image):
     cv2.namedWindow('image',WINDOW_NORMAL)
     cv2.resizeWindow('image', 800,600) # to resize the output window
     cv2.imshow("image", img)
+    
+    #finding the breadth of a road in meters
+    pixels = np.array(img)
+    width, height, channels = pixels.shape
+    actual_width = 5
+    pixel_distance = sqrt((maxx - minx) ** 2 + (xmaxy - xminy) ** 2)
+    actual_distance = (pixel_distance / width) * actual_width
+    
+    if(actual_distance <=3.75):
+        actual_distance = 3.75  #single lane
+    
+    elif(actual_distance > 3.75 and actual_distance <=5.5):
+        actual_distance = 5.5  #intermidiate lane
+    
+    elif(actual_distance > 5.5 and actual_distance <=7):
+        actual_distance = 7    #double lane without kerbs
+    
+    elif(actual_distance > 7 and actual_distance <=7.5):
+        actual_distance = 7.5  #double lane with kerbs
+        
+    elif(actual_distance > 7.5 and actual_distance <=11.25):
+        actual_distance = 11.25  #three lane
+        
+    elif(actual_distance > 11.25 and actual_distance <=15):
+        actual_distance = 15   #4 lane
+        
+    elif(actual_distance > 15 and actual_distance <=18.75):
+        actual_distance = 18.75   #5lane
+    
+    elif(actual_distance > 18.75 and actual_distance <=22.5):
+        actual_distance = 22.5     #6 lane
+    
     cv2.waitKey(0)
-
+    
     # save the data to a csv file
     # with open("static-data.csv", 'a') as f1:
     #     cwriter = csv.writer(f1)
@@ -225,9 +268,10 @@ def from_static_image(image):
             pass
         else:
             f1[str(a)] = 0
-           
+    
     f1.update(f) 
-    f1['breadth'] = breadth
+    vehicle_area = f1['car']*8.245 + f1['motorbike']*1.834 + f1['bus']*35.7 + f1['truck']*51.8
+    f1['breadth'] = actual_distance
     f1['vehicle_area'] = vehicle_area
     f1['miny'] = miny
     f1['maxy'] = maxy
@@ -237,4 +281,4 @@ cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     # realTime()
-    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
+    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-4.jpg")
