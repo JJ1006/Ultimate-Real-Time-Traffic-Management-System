@@ -12,8 +12,8 @@ from scipy.spatial import distance as dist
 from PIL import Image
 from math import sqrt
 
-path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
-# path = "D:Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+# path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
 
 # Initialize Tracker
 tracker = EuclideanDistTracker()
@@ -282,3 +282,4 @@ cv2.destroyAllWindows()
 if __name__ == '__main__':
     # realTime()
     from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-4.jpg")
+    # from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-4.jpg")
