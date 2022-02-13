@@ -2,6 +2,7 @@
 # Import necessary packages
 
 from cmath import pi
+from this import d
 import cv2
 import csv
 import collections
@@ -12,8 +13,8 @@ from scipy.spatial import distance as dist
 from PIL import Image
 from math import sqrt
 
-# path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
-path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+# path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
 
 # Initialize Tracker
 tracker = EuclideanDistTracker()
@@ -128,6 +129,8 @@ def postProcess(outputs,img):
     miny = 100
     xminy=0
     xmaxy=0
+    ymaxx=0
+    yminx=0
    
     for output in outputs:
         for det in output:
@@ -146,36 +149,48 @@ def postProcess(outputs,img):
     # Apply Non-Max Suppression
     indices = cv2.dnn.NMSBoxes(boxes, confidence_scores, confThreshold, nmsThreshold)
     # print(classIds)
-    for i in indices.flatten():
-        x, y, w, h = boxes[i][0], boxes[i][1], boxes[i][2], boxes[i][3]
-        print(x , " ", y)
-        if(maxx < x):
-            maxx = x
-            xmaxy = y
-        if(minx > x):
-            minx = x
-            xminy = y
-        if(maxy < y):
-            maxy =y
-        if(miny > y):
-            miny = y 
-        # print(x,y,w,h)
+    if len(indices) <= 0:
+        minx=0
+        maxx=0
+        maxy=0
+        miny = 0
+        xminy=0
+        xmaxy=0
+        ymaxx=0
+        yminx=0
+        return minx,maxx,maxy,miny,xmaxy,xminy,ymaxx,yminx
+    else:   
+        for i in indices.flatten():
+            x, y, w, h = boxes[i][0], boxes[i][1], boxes[i][2], boxes[i][3]
+            if(maxx < x):
+                maxx = x
+                xmaxy = y
+            if(minx > x):
+                minx = x
+                xminy = y
+            if(maxy < y):
+                maxy =y
+                ymaxx =x
+            if(miny > y):
+                miny = y 
+                yminx = x
+            # print(x,y,w,h)
 
-        color = [int(c) for c in colors[classIds[i]]]
-        name = classNames[classIds[i]]
-        detected_classNames.append(name)
-        # Draw classname and confidence score 
-        cv2.putText(img,f'{name.upper()} {int(confidence_scores[i]*100)}%',(x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+            color = [int(c) for c in colors[classIds[i]]]
+            name = classNames[classIds[i]]
+            detected_classNames.append(name)
+            # Draw classname and confidence score 
+            cv2.putText(img,f'{name.upper()} {int(confidence_scores[i]*100)}%',(x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
-        # Draw bounding rectangle
-        cv2.rectangle(img, (x, y), (x + w, y + h), color, 1)
-        detection.append([x, y, w, h, required_class_index.index(classIds[i])])
+            # Draw bounding rectangle
+            cv2.rectangle(img, (x, y), (x + w, y + h), color, 1)
+            detection.append([x, y, w, h, required_class_index.index(classIds[i])])
 
     # Update the tracker for each object
-    boxes_ids = tracker.update(detection)
-    for box_id in boxes_ids:
-        count_vehicle(box_id, img)
-    return minx,maxx,maxy,miny,xmaxy,xminy
+        boxes_ids = tracker.update(detection)
+        for box_id in boxes_ids:
+            count_vehicle(box_id, img)
+        return minx,maxx,maxy,miny,xmaxy,xminy,ymaxx,yminx
 
 image_file = 'vehicle classification-image02.png'
 def from_static_image(image):
@@ -196,64 +211,73 @@ def from_static_image(image):
     outputs = net.forward(outputNames)
 
     # Find the objects from the network output
-    minx,maxx,maxy,miny, xmaxy, xminy = postProcess(outputs,img)
-    breadth = maxx-minx
-    height = maxy-miny
-    print(maxx, " ", minx)  
-    print(breadth)
-    # road_area = breadth * height
-    # ratio = (float)(road_area/vehicle_area)
+    minx,maxx,maxy,miny, xmaxy, xminy, ymaxx, yminx = postProcess(outputs,img)
+    if(minx ==0 and maxx ==0 and maxy ==0 and miny ==0 and xmaxy ==0 and xminy ==0 and ymaxx ==0 and yminx ==0):
+        f = {'car' : 0, 'motorbike' : 0, 'bus' : 0, 'truck' : 0 }
+        print(f)
+        f1 = f
+        actual_distance = 1
+        road_length = 1
+    else:
+        # count the frequency of detected classes
+        frequency = collections.Counter(detected_classNames)
+        f = dict(frequency)
+        print(frequency)
+        # Draw counting texts in the frame
+        cv2.putText(img, "Car:        "+str(frequency['car']), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
+        cv2.putText(img, "Motorbike:  "+str(frequency['motorbike']), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
+        cv2.putText(img, "Bus:        "+str(frequency['bus']), (20, 80), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
+        cv2.putText(img, "Truck:      "+str(frequency['truck']), (20, 100), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
 
-    # count the frequency of detected classes
-    frequency = collections.Counter(detected_classNames)
-    f = dict(frequency)
-    print(frequency)
-    # Draw counting texts in the frame
-    cv2.putText(img, "Car:        "+str(frequency['car']), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
-    cv2.putText(img, "Motorbike:  "+str(frequency['motorbike']), (20, 60), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
-    cv2.putText(img, "Bus:        "+str(frequency['bus']), (20, 80), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
-    cv2.putText(img, "Truck:      "+str(frequency['truck']), (20, 100), cv2.FONT_HERSHEY_SIMPLEX, font_size, font_color, font_thickness)
 
+        # cv2.imshow("image", img)
+        # cv2.waitKey(0)
 
-    # cv2.imshow("image", img)
-    # cv2.waitKey(0)
-
-    cv2.namedWindow('image',WINDOW_NORMAL)
-    cv2.resizeWindow('image', 800,600) # to resize the output window
-    cv2.imshow("image", img)
+        cv2.namedWindow('image',WINDOW_NORMAL)
+        cv2.resizeWindow('image', 800,600) # to resize the output window
+        cv2.imshow("image", img)
     
-    #finding the breadth of a road in meters
-    pixels = np.array(img)
-    width, height, channels = pixels.shape
-    actual_width = 5
-    pixel_distance = sqrt((maxx - minx) ** 2 + (xmaxy - xminy) ** 2)
-    actual_distance = (pixel_distance / width) * actual_width
+        #finding the breadth of a road in meters
+        pixels = np.array(img)
+        width, height, channels = pixels.shape
+        actual_width = 5
+        pixel_distance = sqrt((maxx - minx) ** 2 + (xmaxy - xminy) ** 2)
+        actual_distance = (pixel_distance / width) * actual_width 
+        road_length = 0
     
-    if(actual_distance <=3.75):
-        actual_distance = 3.75  #single lane
+        if(actual_distance <=3.75):
+            actual_distance = 3.75  #single lane 17 cars in one lane and 2m ahead clearance
+            road_length = 76.5 + (2 * 16)
     
-    elif(actual_distance > 3.75 and actual_distance <=5.5):
-        actual_distance = 5.5  #intermidiate lane
+        elif(actual_distance > 3.75 and actual_distance <=5.5):
+            actual_distance = 5.5  #intermidiate lane cosidered 12 cars in 1 line and 5 cars parallel 
+            road_length = 54 + (2 * 11)
     
-    elif(actual_distance > 5.5 and actual_distance <=7):
-        actual_distance = 7    #double lane without kerbs
+        elif(actual_distance > 5.5 and actual_distance <=7):
+            actual_distance = 7    #double lane without kerbs 9 cars in 1 line and 2m ahead clearance
+            road_length = 40.5 + (2 * 8)
     
-    elif(actual_distance > 7 and actual_distance <=7.5):
-        actual_distance = 7.5  #double lane with kerbs
+        elif(actual_distance > 7 and actual_distance <=7.5):
+            actual_distance = 7.5  #double lane with kerbs 9 cars in 1 line and 2m ahead clearance
+            road_length = 40.5 + (2 * 8)
         
-    elif(actual_distance > 7.5 and actual_distance <=11.25):
-        actual_distance = 11.25  #three lane
+        elif(actual_distance > 7.5 and actual_distance <=11.25):
+            actual_distance = 11.25  #three lane keeping 51 cars as traffic so 17 cars per lane and 2m ahead clearance
+            road_length = 76.5 + (2 * 16)
         
-    elif(actual_distance > 11.25 and actual_distance <=15):
-        actual_distance = 15   #4 lane
+        elif(actual_distance > 11.25 and actual_distance <=15):
+            actual_distance = 15   #4 lane 51 cars as traffic so 13 cars per lane and 2m ahead clearance
+            road_length = 58.5 + (2 * 12)
         
-    elif(actual_distance > 15 and actual_distance <=18.75):
-        actual_distance = 18.75   #5lane
+        elif(actual_distance > 15 and actual_distance <=18.75):
+            actual_distance = 18.75   #5lane 51 cars as traffic so 11 cars per lane and 2m ahead clearance
+            road_length = 49.5 + (10 * 2)
     
-    elif(actual_distance > 18.75 and actual_distance <=22.5):
-        actual_distance = 22.5     #6 lane
+        elif(actual_distance > 18.75 and actual_distance <=22.5):
+            actual_distance = 22.5     #6 lane 51 cars as traffic so 9 cars per lane and 2m ahead clearance
+            road_length = 40.5 + (2 * 8)
     
-    cv2.waitKey(0)
+        cv2.waitKey(0)
     
     # save the data to a csv file
     # with open("static-data.csv", 'a') as f1:
@@ -261,17 +285,18 @@ def from_static_image(image):
     #     cwriter.writerow([image, frequency['car'], frequency['motorbike'], frequency['bus'], frequency['truck']])
     # f1.close()
     
-    f1 ={}
-    list1 = ['car','motorbike','bus', 'truck']
-    for a in list1:
-        if(a in f.keys()):
-            pass
-        else:
-            f1[str(a)] = 0
+        f1 ={}
+        list1 = ['car','motorbike','bus', 'truck']
+        for a in list1:
+            if(a in f.keys()):
+                pass
+            else:
+                f1[str(a)] = 0
     
-    f1.update(f) 
-    vehicle_area = f1['car']*8.245 + f1['motorbike']*1.834 + f1['bus']*35.7 + f1['truck']*51.8
+        f1.update(f) 
+    vehicle_area = (float)(f1['car']*8.245 + f1['motorbike']*1.834 + f1['bus']*35.7 + f1['truck']*51.8)
     f1['breadth'] = actual_distance
+    f1['height'] = road_length
     f1['vehicle_area'] = vehicle_area
     f1['miny'] = miny
     f1['maxy'] = maxy
@@ -281,5 +306,5 @@ cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     # realTime()
-    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-4.jpg")
+    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
     # from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-4.jpg")
