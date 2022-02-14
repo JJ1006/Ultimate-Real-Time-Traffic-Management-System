@@ -1,3 +1,5 @@
+import collections
+import csv
 import threading
 import cv2
 
@@ -131,17 +133,82 @@ def setting(G,R,s, arr):
     return result
 
 
+def newG(G):
+    index = [0,0,0,0] #for row indexes of last occurences of 1,2,3,4
+    timestamp=[]
+    lis = []
+    with open('static-data.csv', 'r',newline="") as read_obj:
+        csvfile = csv.reader(read_obj)
+        print(list(csvfile))
+        for rows in list(csvfile):
+            print("into rows")
+            lis.append(rows)
+        row1 = list(csvfile)[-1]
+        lasttime = float(row1[3])
+       
+              
+        for row in lis[-1::]:
+            if(0 in index or lis.index(row) == 0):
+                if(int(row[0]) == 1 and index[0] == 0 ):
+                    index[0] = lis.index(row)
+                elif(int(row[0]) == 2 and index[1] == 0 ):
+                    index[1] = lis.index(row)
+                elif(int(row[0]) == 3 and index[2] == 0 ):
+                    index[2] = lis.index(row)
+                elif(int(row[0]) == 4 and index[3] == 0 ):
+                    index[3] = lis.index(row)
+            else:
+                break
+        x=0
+        print(index)
+        for i in range(0,4):
+            timestamp[i] = math.ceil(lasttime - float(lis[index[i]][3]))
+            if(timestamp[i] > x):
+                x = timestamp[i]
+        print(timestamp)
+        if(x >= 140.0):
+            G = timestamp.index(x)+1
+            print("G changed in newG")
+    
+    return G    
+        
+def Find_If_Any_Lane_140(density,Breadth, road_length,freq, arr , G, R):
+    with open('static-data.csv', 'r',newline="") as read_obj:  #if max density comes of same lane then don't consider that lane and check again for rest of the lanes
+        print(" in case 1 int type G code")
+        csv_reader = csv.reader(read_obj)
+        row1 = list(csv_reader)[-1]
+        
+        print("in")
+        if(G == int(row1[0])):
+            print("Same G as previous lane so ignoring this G and changing")
+            print(density)
+            density[G-1] = 0
+            print(density)
+            which_lane_to_choose(density,Breadth, road_length,freq, arr , G, R)
+        G = newG(G)           
+        
+    return G
+
 #assuming side 1 has red ,side 2 has green, side 3 has red, side 4 has red as an initial case
    
 def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
     if(max(density) >= maxdensity): #case1 when max number of vehicles is greater than maxcount 
         print("In case 1")
-        G = density.index(max(density))+1 #give the lane number to green signal to turn that signal green
+        G = density.index(max(density))+1 #give the lane number to green signal to turn that signal green   
+        G = Find_If_Any_Lane_140(density,Breadth, road_length,freq, arr , G, R)
         AllLane2 = [1,2,3,4]
         AllLane2.remove(G)
-        R = AllLane2 #to turn all the other lanes red
+        R = AllLane2 #to turn all the other lanes red      
         print(G, " ", R)
         seconds = road_length[G-1] + 5
+        
+        # save the data to a csv file
+        with open("static-data.csv", 'a', newline="") as f1:
+            cwriter = csv.writer(f1)
+            ts = time.time()
+            cwriter.writerow([ G , R , seconds,ts])
+        f1.close()
+        
         result = setting(G,R,seconds, arr)
         density = result['density']
         Breadth = result['Breadth']
@@ -153,10 +220,22 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
     if(max(density) < 7.0): #clockwise
         print("In case 2")
         G = density.index(max(density))+1
+        G = Find_If_Any_Lane_140(density,Breadth, road_length,freq, arr , G, R)
+                
         AllLane2 = [1,2,3,4]
-        R = AllLane2.remove(G)
+        AllLane2.remove(G)
+        R = AllLane2
         print(G, " ", R)
         seconds = 5
+        
+        # save the data to a csv file
+        with open("static-data.csv", 'a',newline="") as f1:
+            cwriter = csv.writer(f1)
+            ts = time.time()
+            cwriter.writerow([ G , R , int(math.ceil(seconds/2) + 5), ts])
+        f1.close()
+    
+        
         result = setting(G,R,seconds, arr)
         density = result['density']
         Breadth = result['Breadth']
@@ -168,6 +247,9 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
     elif(max(density) < maxdensity): #when all the lanes have count less than maxcount than less time will be given but the algorithm remains same
         print("In case 3")
         G = density.index(max(density))+1 #give the lane number to green signal to turn that signal green
+        
+        G = Find_If_Any_Lane_140(density,Breadth, road_length,freq, arr , G, R) 
+        
         AllLane2 = [1,2,3,4]
         AllLane2.remove(G)
         R = AllLane2 #to turn all the other lanes red
@@ -198,6 +280,21 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
             lane = 6
         time = math.ceil((math.ceil(freq_required['car']/lane)*4.5)/4.16)
         seconds = min(time, 10)
+        
+        if(seconds <= 15):
+            with open("static-data.csv", 'a',newline="") as f1:
+                cwriter = csv.writer(f1)
+                ts = time.time()
+                cwriter.writerow([ G , R , int(math.ceil(seconds/2) + 5),ts])
+            f1.close()
+        else:
+            # save the data to a csv file
+            with open("static-data.csv", 'a',newline="") as f1:
+                cwriter = csv.writer(f1)
+                ts = time.time()
+                cwriter.writerow([ G , R , seconds,ts])
+            f1.close()
+        
         result = setting(G,R,seconds, arr)
         density = result['density']
         Breadth = result['Breadth']
