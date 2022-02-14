@@ -4,6 +4,8 @@ import threading
 import cv2
 
 from numpy import empty
+import pandas as pd
+import numpy as np
 import vehicle_count
 import time
 import queue
@@ -134,42 +136,45 @@ def setting(G,R,s, arr):
 
 
 def newG(G):
-    index = [0,0,0,0] #for row indexes of last occurences of 1,2,3,4
-    timestamp=[]
-    lis = []
-    with open('static-data.csv', 'r',newline="") as read_obj:
-        csvfile = csv.reader(read_obj)
-        print(list(csvfile))
-        for rows in list(csvfile):
-            print("into rows")
-            lis.append(rows)
-        row1 = list(csvfile)[-1]
-        lasttime = float(row1[3])
-       
-              
-        for row in lis[-1::]:
-            if(0 in index or lis.index(row) == 0):
-                if(int(row[0]) == 1 and index[0] == 0 ):
-                    index[0] = lis.index(row)
-                elif(int(row[0]) == 2 and index[1] == 0 ):
-                    index[1] = lis.index(row)
-                elif(int(row[0]) == 3 and index[2] == 0 ):
-                    index[2] = lis.index(row)
-                elif(int(row[0]) == 4 and index[3] == 0 ):
-                    index[3] = lis.index(row)
-            else:
-                break
-        x=0
-        print(index)
-        for i in range(0,4):
-            timestamp[i] = math.ceil(lasttime - float(lis[index[i]][3]))
-            if(timestamp[i] > x):
-                x = timestamp[i]
-        print(timestamp)
-        if(x >= 140.0):
-            G = timestamp.index(x)+1
-            print("G changed in newG")
-    
+    Index = [0,0,0,0] #for row indexes of last occurences of 1,2,3,4
+    one,two,three,four = True,True,True,True
+    time_count = [0,0,0,0]
+    df = pd.read_csv("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/static-data.csv",header=None)
+    df1 = pd.DataFrame(df,index=None)  
+    csvfile = df1.to_numpy().tolist()          
+    # print(csvfile)
+    j = len(csvfile)-1
+    for a in csvfile[-1::-1]:
+        print(a, " a")
+        if(a[0] == 1 and one is True and j>0):
+            Index[0] = csvfile.index(a)
+            j=j-1
+            one = False
+        if(a[0] == 2 and two is True and j>0):
+            Index[1] = csvfile.index(a)
+            j=j-1
+            two = False
+        if(a[0] == 3 and three is True and j>0):
+            Index[2] = csvfile.index(a)
+            j=j-1
+            three = False
+        if(a[0] == 4 and four is True and j>0):
+            Index[3] = csvfile.index(a)
+            j=j-1
+            four = False
+        if(j==0 or ((one is False) and (two is False) and (three is False) and (four is False))):
+            break
+                
+    print(Index,"index check")  
+    consider = [0,1,2,3]
+    rowlast = csvfile[-1]
+    consider.remove(rowlast[0]-1)
+    for i in consider:
+        time_count[i]= sum([x[2] for x in csvfile[Index[i]+1 : len(csvfile)] ])
+    maxcount = max(time_count)
+    if(maxcount>=140):
+        G = time_count.index(maxcount)+1
+        print(G, " G changed for 140")
     return G    
         
 def Find_If_Any_Lane_140(density,Breadth, road_length,freq, arr , G, R):
@@ -205,8 +210,7 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
         # save the data to a csv file
         with open("static-data.csv", 'a', newline="") as f1:
             cwriter = csv.writer(f1)
-            ts = time.time()
-            cwriter.writerow([ G , R , seconds,ts])
+            cwriter.writerow([ G , R , seconds])
         f1.close()
         
         result = setting(G,R,seconds, arr)
@@ -231,8 +235,7 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
         # save the data to a csv file
         with open("static-data.csv", 'a',newline="") as f1:
             cwriter = csv.writer(f1)
-            ts = time.time()
-            cwriter.writerow([ G , R , int(math.ceil(seconds/2) + 5), ts])
+            cwriter.writerow([ G , R , int(math.ceil(seconds/2) + 5)])
         f1.close()
     
         
@@ -278,21 +281,19 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
     
         elif(Breadth[G-1] > 18.75 and Breadth[G-1] <=22.5):
             lane = 6
-        time = math.ceil((math.ceil(freq_required['car']/lane)*4.5)/4.16)
-        seconds = min(time, 10)
+        time1 = math.ceil((math.ceil(freq_required['car']/lane)*4.5)/4.16)
+        seconds = min(time1, 10)
         
         if(seconds <= 15):
             with open("static-data.csv", 'a',newline="") as f1:
                 cwriter = csv.writer(f1)
-                ts = time.time()
-                cwriter.writerow([ G , R , int(math.ceil(seconds/2) + 5),ts])
+                cwriter.writerow([ G , R , int(math.ceil(seconds/2) + 5)])
             f1.close()
         else:
             # save the data to a csv file
             with open("static-data.csv", 'a',newline="") as f1:
                 cwriter = csv.writer(f1)
-                ts = time.time()
-                cwriter.writerow([ G , R , seconds,ts])
+                cwriter.writerow([ G , R , seconds])
             f1.close()
         
         result = setting(G,R,seconds, arr)
