@@ -233,9 +233,9 @@ def from_static_image(image):
         # cv2.imshow("image", img)
         # cv2.waitKey(0)
 
-        cv2.namedWindow('image',WINDOW_NORMAL)
-        cv2.resizeWindow('image', 800,600) # to resize the output window
-        cv2.imshow("image", img)
+        # cv2.namedWindow('image',WINDOW_NORMAL)
+        # cv2.resizeWindow('image', 800,600) # to resize the output window
+        # cv2.imshow("image", img)
     
         #finding the breadth of a road in meters
         pixels = np.array(img)
