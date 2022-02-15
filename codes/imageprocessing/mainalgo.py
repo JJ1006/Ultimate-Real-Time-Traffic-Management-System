@@ -16,10 +16,11 @@ que = queue.Queue()
 
 def greatestLaneCount(arr):
     if(len(arr) ==0 ):
-        arr = os.listdir("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
+        # arr = os.listdir("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
+        arr = os.listdir("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
     
-    path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/"
-    # path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/"
+    # path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/"
+    path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/"
     
     freq1 = vehicle_count.from_static_image(path  + arr[0])
     # freq1 = vehicle_count.from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/testing.jpg")
@@ -139,7 +140,8 @@ def newG(G):
     Index = [0,0,0,0] #for row indexes of last occurences of 1,2,3,4
     one,two,three,four = True,True,True,True
     time_count = [0,0,0,0]
-    df = pd.read_csv("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/static-data.csv",header=None)
+    # df = pd.read_csv("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/static-data.csv",header=None)
+    df = pd.read_csv("D:/Ultimate-Real-Time-Traffic-Management-System/static-data.csv",header=None)
     df1 = pd.DataFrame(df,index=None)  
     csvfile = df1.to_numpy().tolist()          
     # print(csvfile)
@@ -170,11 +172,12 @@ def newG(G):
     rowlast = csvfile[-1]
     consider.remove(rowlast[0]-1)
     for i in consider:
-        time_count[i]= sum([x[2] for x in csvfile[Index[i]+1 : len(csvfile)] ])
-    maxcount = max(time_count)
-    if(maxcount>=140):
-        G = time_count.index(maxcount)+1
-        print(G, " G changed for 140")
+        print([x[2] for x in csvfile[Index[i]+1 : len(csvfile)] ])
+        time_count[i]= sum([x[2] for x in csvfile[Index[i]+1 : len(csvfile)] ]) #sum of all the time_counts of the lanes
+    maxcount = max(time_count) #max time_count of the lanes
+    if(maxcount>=140): #if maxcount is greater than 140 then we have to consider all the lanes
+        G = time_count.index(maxcount)+1 #lane number
+        print(G, " G changed for 140") #lane number
     return G    
         
 def Find_If_Any_Lane_140(density,Breadth, road_length,freq, arr , G, R):
@@ -205,7 +208,7 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
         AllLane2.remove(G)
         R = AllLane2 #to turn all the other lanes red      
         print(G, " ", R)
-        seconds = road_length[G-1] + 5
+        seconds = (road_length[G-1]/3.2) + 5
         
         # save the data to a csv file
         with open("static-data.csv", 'a', newline="") as f1:
@@ -281,7 +284,7 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
     
         elif(Breadth[G-1] > 18.75 and Breadth[G-1] <=22.5):
             lane = 6
-        time1 = math.ceil((math.ceil(freq_required['car']/lane)*4.5)/4.16)
+        time1 = math.ceil((math.ceil(freq_required['car']/lane)*4.5+(freq_required['car']-(1*2)))/3.2)
         seconds = min(time1, 10)
         
         if(seconds <= 15):
@@ -307,12 +310,10 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R):
 if __name__ == '__main__':
     AllLane = [1,2,3,4]         
     maxdensity = 50.0      #threshold
-    arr = os.listdir("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
-    # arr = os.listdir("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop")
+    # arr = os.listdir("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
+    arr = os.listdir("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop")
     density ,Breadth, road_length, freq, arr = greatestLaneCount(arr)
     G = 1
     R = [2,3,4]
     Y = 0
     which_lane_to_choose(density, Breadth, road_length, freq, arr , G, R)
-    
-    

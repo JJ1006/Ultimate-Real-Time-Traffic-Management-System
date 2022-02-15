@@ -13,8 +13,8 @@ from scipy.spatial import distance as dist
 from PIL import Image
 from math import sqrt
 
-path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
-# path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+# path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
+path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/imageprocessing/"
 
 # Initialize Tracker
 tracker = EuclideanDistTracker()
@@ -233,9 +233,9 @@ def from_static_image(image):
         # cv2.imshow("image", img)
         # cv2.waitKey(0)
 
-        # cv2.namedWindow('image',WINDOW_NORMAL)
-        # cv2.resizeWindow('image', 800,600) # to resize the output window
-        # cv2.imshow("image", img)
+        cv2.namedWindow('image',WINDOW_NORMAL)
+        cv2.resizeWindow('image', 800,600) # to resize the output window
+        cv2.imshow("image", img)
     
         #finding the breadth of a road in meters
         pixels = np.array(img)
@@ -306,5 +306,5 @@ cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     # realTime()
-    from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
-    # from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-4.jpg")
+    # from_static_image("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/example2.jpg")
+    from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/traffic-4.jpg")
