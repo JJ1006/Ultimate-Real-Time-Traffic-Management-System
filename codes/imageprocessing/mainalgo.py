@@ -16,11 +16,11 @@ que = queue.Queue()
 
 def greatestLaneCount(arr): #this function is used to find the greatest lane count in the last 10 seconds
     if(len(arr) ==0 ): #if there is no data in the last 10 seconds
-        # arr = os.listdir("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
-        arr = os.listdir("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
+        arr = os.listdir("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
+        # arr = os.listdir("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
     
-    # path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/"
-    path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/" #path to the folder where images are stored
+    path = "C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/"
+    # path = "D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/" #path to the folder where images are stored
     
     freq1 = vehicle_count.from_static_image(path  + arr[0]) #reading the first image in the folder
     # freq1 = vehicle_count.from_static_image("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/testing.jpg")
@@ -140,8 +140,8 @@ def newG(G): #this function is used to find the green lane
     Index = [0,0,0,0] #for row indexes of last occurences of 1,2,3,4
     one,two,three,four = True,True,True,True #for checking the occurence of 1,2,3,4
     time_count = [0,0,0,0] #for counting the time of 1,2,3,4
-    # df = pd.read_csv("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/static-data.csv",header=None)
-    df = pd.read_csv("D:/Ultimate-Real-Time-Traffic-Management-System/static-data.csv",header=None) #reading the static data
+    df = pd.read_csv("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/static-data.csv",header=None)
+    # df = pd.read_csv("D:/Ultimate-Real-Time-Traffic-Management-System/static-data.csv",header=None) #reading the static data
     df1 = pd.DataFrame(df,index=None)  #converting the dataframe to dataframe
     csvfile = df1.to_numpy().tolist()  #converting the dataframe to numpy array
     # print(csvfile) 
@@ -310,8 +310,8 @@ def which_lane_to_choose(density,Breadth, road_length, freq, arr,G, R): #this fu
 if __name__ == '__main__': #main function
     AllLane = [1,2,3,4]  #all the lanes
     maxdensity = 50.0      #threshold
-    # arr = os.listdir("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
-    arr = os.listdir("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop") #list of all the images
+    arr = os.listdir("C:/Users/Deepak/Documents/GitHub/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop/")
+    # arr = os.listdir("D:/Ultimate-Real-Time-Traffic-Management-System/codes/videos/images_for_loop") #list of all the images
     density ,Breadth, road_length, freq, arr = greatestLaneCount(arr) #calling the function greatestLaneCount
     G = 1 #green lane
     R = [2,3,4] #red lanes
